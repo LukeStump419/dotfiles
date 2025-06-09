@@ -1,5 +1,5 @@
 ##############################################################################
-# ~/.bashrc - Bash Configuration File
+# ~/.bashrc - Bash Configuration File  (by Luke Stump)
 #
 # Overview:
 #   This file customizes the Bash shell environment for interactive login and
