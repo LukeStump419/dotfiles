@@ -145,6 +145,72 @@ nowall() {
 #   nowall       # Show all the above at once
 
 #------------------------------------------------------------------------------
+# File cleaning functions: For when your data comes from Windows, Excel, or elsewhere.
+# All these operate *in place* and will overwrite the originals, so back up if you’re nervous.
+#------------------------------------------------------------------------------
+
+# (1) clean - Quickly fix common text file issues (in place)
+# Usage:   clean file1 [file2 ...]
+# Example: clean text_file.txt data_file.csv
+# What it does:
+#   - Removes Windows carriage returns (\r), so you get Unix line endings
+#   - Replaces weird Unicode non-breaking spaces (hex C2A0) with normal spaces
+#   - Replaces literal question marks (?) with dashes (-), for those mystery exports
+clean () {
+    sed -i 's/\r//g; s/[\xC2\xA0]/ /g; s/?/-/g' "$@"
+}
+
+# (2) trimws - Remove trailing whitespace from each line (in place)
+# Usage:   trimws file1 [file2 ...]
+trimws () {
+    sed -i 's/[[:space:]]\+$//' "$@"
+}
+
+# (3) noempty - Remove all empty lines (in place)
+# Usage:   noempty file1 [file2 ...]
+noempty () {
+    sed -i '/^$/d' "$@"
+}
+
+# (4) tabs2spaces - Convert tabs to four spaces (in place)
+# Usage:   tabs2spaces file1 [file2 ...]
+tabs2spaces () {
+    expand -t 4 "$@" > tmp && mv tmp "$@"
+}
+
+# (5) nobom - Remove UTF-8 BOM from the start of file (in place)
+# Usage:   nobom file1 [file2 ...]
+nobom () {
+    sed -i '1s/^\xEF\xBB\xBF//' "$@"
+}
+
+# (6) superclean - Throw the kitchen sink at your files (in place)
+# Usage:   superclean file1 [file2 ...]
+# What it does:
+#   - Removes Windows carriage returns (\r)
+#   - Converts weird Unicode non-breaking spaces to normal spaces
+#   - Replaces literal question marks (?) with dashes (-)
+#   - Removes trailing whitespace
+#   - Removes empty lines
+#   - Converts tabs to four spaces
+#   - Removes UTF-8 BOM (Byte Order Mark)
+# Why? Because data is sometimes filthier than your browser history.
+superclean () {
+    for file in "$@"; do
+        # Remove Windows carriage returns, non-breaking spaces, question marks
+        sed -i 's/\r//g; s/[\xC2\xA0]/ /g; s/?/-/g' "$file"
+        # Remove trailing whitespace
+        sed -i 's/[[:space:]]\+$//' "$file"
+        # Remove empty lines
+        sed -i '/^$/d' "$file"
+        # Remove UTF-8 BOM
+        sed -i '1s/^\xEF\xBB\xBF//' "$file"
+        # Convert tabs to four spaces (requires expand)
+        expand -t 4 "$file" > "${file}.superclean_tmp" && mv "${file}.superclean_tmp" "$file"
+    done
+}
+
+#------------------------------------------------------------------------------
 # Don't burn out, set a timer. Focus. Timer Goes off. Take a breather.
 #------------------------------------------------------------------------------
 timer() {
@@ -164,18 +230,6 @@ timer() {
 #------------------------------------------------------------------------------
 alias reloadbash='source ~/.bashrc && echo "Reloaded ~/.bashrc"'
 alias reloadalias='source ~/.alias.bash && echo "Reloaded ~/.alias.bash"'
-
-#------------------------------------------------------------------------------
-# "Fun" or "Why not?" section.
-#------------------------------------------------------------------------------
-alias please='sudo $(history -p !!)'  # Because manners matter.
-alias fuck='sudo $(history -p !!)'    # Because sometimes you're just frustrated.
-
-##############################################################################
-# End of ~/.alias.bash. Enjoy typing less, and never admit how many times
-# you use 'githelp'.
-##############################################################################
-
 
 ##############################################################################
 # For more info, see the accompanying README.md in this dotfiles repository.
