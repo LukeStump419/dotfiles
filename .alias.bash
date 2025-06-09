@@ -11,7 +11,7 @@
 alias l='ls -CF'        # Classic listing, but fancier than 'ls'
 alias la='ls -A'        # Show hidden stuff (dotfiles!), but not . and ..
 alias ll='ls -alF'      # Long listing with all the details
-alias lrt= 'ls -lrt'    # I dunno man, I just like this one
+alias lrt='ls -lrt'    # I dunno man, I just like this one
 
 #------------------------------------------------------------------------------
 # Quick navigation, because 'cd ../../../../' is not my jam.
@@ -88,8 +88,8 @@ alias gpop='git stash pop'
 #------------------------------------------------------------------------------
 # Editing shortcuts, because you’ll forget file names anyway.
 #------------------------------------------------------------------------------
-alias vi='vim'               # If you use nano, I’m judging you (kidding! ...sorta)
-alias svi='sudo vim'         # For those rare moments of sudo-powered courage
+alias vi='vim'
+alias svi='sudo vim'
 alias editbash='vim ~/.bashrc'
 alias editalias='vim ~/.alias.bash'
 
